@@ -1,0 +1,21 @@
+const express = require('express');
+const db = require('./config/db');
+const app = express();
+require('dotenv').config();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+
+app.use('/api', require('./src/middleware/apikey'))
+app.use('/api', require('./src/routes'));
+
+app.get('/', (req, res) => {
+    res.send('Api routes are available in /api/. You will be needing a api key to access that route. please contact Arnab Chatterjee for api key 💀. ');
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
