@@ -91,31 +91,66 @@ router.post('/create-application', async (req, res) => {
     }
 });
 
+router.post('/applications/filter', (req, res) => {
+
+    const { fisc_year, date, current_class } = req.body;
+
+    const filter = {};
+
+    if (date) {
+        const [startDate, endDate] = date.split('-');
+        filter.createdAt = {
+            $gte: new Date(new Date(startDate).setHours(0, 0, 0)),
+            $lt: new Date(new Date(endDate).setHours(23, 59, 59))
+        };
+    }
+    if (fisc_year) {
+        filter.fisc_year = fisc_year;
+    }
+    if (current_class) {
+        filter.current_class = current_class;
+    }
+
+    Student.find(filter).then(result => res.status(200).json(result)).catch((err) => {
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: err });
+    })
+
+
+})
+
 router.get('/applications', (req, res) => {
     Student.find({}).then(result => res.json(result)).catch(() => {
-        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
 
 router.delete('/applications', (req, res) => {
     Student.deleteMany({}).then(result => res.json(result)).catch(() => {
-        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
 
 router.get('/applications/:id', (req, res) => {
     Student.find({ _id: req.params.id }).then(result => res.json(result)).catch(() => {
-        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+    })
+})
+
+router.delete('/applications/:id', (req, res) => {
+    Student.deleteOne({ _id: req.params.id }).then(result => res.json(result)).catch(() => {
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
 
 router.post('/search-applications', (req, res) => {
 
-    const {key,value} = req.body;
+    const { key, value } = req.body;
 
     Student.find({ [key]: value }).then(result => res.json(result)).catch(() => {
-        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
+
+
 
 module.exports = router;

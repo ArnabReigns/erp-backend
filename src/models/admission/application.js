@@ -34,6 +34,8 @@ const studentSchema = new mongoose.Schema({
   payment_date: Date,
   payment_mode: String,
   challan_no: String,
+}, {
+  timestamps: true
 });
 
 const Student = mongoose.model('Student', studentSchema);
