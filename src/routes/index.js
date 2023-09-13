@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
 });
 
 router.use(require('../routes/auth/user'))
-router.use('/admission',require('../routes/admission/application'))
+router.use('/admission', require('../routes/admission/application'), require('../routes/admission/application-graph'))
 
 
 module.exports = router;

@@ -103,4 +103,19 @@ router.delete('/applications', (req, res) => {
     })
 })
 
+router.get('/applications/:id', (req, res) => {
+    Student.find({ _id: req.params.id }).then(result => res.json(result)).catch(() => {
+        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+    })
+})
+
+router.post('/search-applications', (req, res) => {
+
+    const {key,value} = req.body;
+
+    Student.find({ [key]: value }).then(result => res.json(result)).catch(() => {
+        res.statusCode(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
+    })
+})
+
 module.exports = router;
