@@ -27,5 +27,5 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log("server started at port : " + port);
-    console.log(new Date());
+    console.log(new Date().toLocaleDateString());
 });
