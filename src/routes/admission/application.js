@@ -167,9 +167,9 @@ router.post('/applications/filter', (req, res) => {
 
     if (date) {
         const [startDate, endDate] = date.split('-');
-        filter.createdAt = {
+        filter.created_at = {
             $gte: new Date(new Date(startDate).setHours(0, 0, 0)),
-            $lt: new Date(new Date(endDate).setHours(23, 59, 59))
+            $lte: new Date(new Date(endDate).setHours(23, 59, 59))
         };
     }
     if (fisc_year) {
@@ -218,7 +218,6 @@ router.post('/search-applications', (req, res) => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
-
 
 
 module.exports = router;

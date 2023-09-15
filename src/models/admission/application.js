@@ -55,8 +55,7 @@ const ApplicationSchema = new mongoose.Schema({
   payment_date: Date,
   payment_mode: String,
   challan_no: String,
-}, {
-  timestamps: true
+  created_at: Date
 });
 
 ApplicationSchema.pre('save', function (next) {
@@ -72,6 +71,14 @@ ApplicationSchema.pre('save', function (next) {
   const ageInYears = Math.floor(ageInMilliseconds / (365 * 24 * 60 * 60 * 1000));
   this.age = ageInYears;
 
+  next();
+});
+
+ApplicationSchema.pre('save', function(next) {
+  if (!this.created_at) {
+    console.log(new Date())
+    this.created_at = new Date();
+  }
   next();
 });
 
