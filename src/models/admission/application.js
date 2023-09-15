@@ -1,4 +1,3 @@
-const { SpatialTrackingSharp } = require('@mui/icons-material');
 const mongoose = require('mongoose');
 
 const ApplicationSchema = new mongoose.Schema({
