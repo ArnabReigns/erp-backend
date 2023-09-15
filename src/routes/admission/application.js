@@ -3,6 +3,17 @@ const router = express.Router();
 const Student = require('../../models/admission/application');
 const emailValidator = require("email-validator");
 const { HttpStatusCodes, HttpStatusText } = require('../../utils/http-status');
+const fileUpload = require('express-fileupload');
+const AWS = require('aws-sdk'); 
+
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIA2FCMN5RRFNDIBMMF',
+    secretAccessKey: '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'
+});
+
+const bucketName = 'sociolinq';
+
+router.use(fileUpload());
 
 // Create a new student application
 
@@ -166,6 +177,25 @@ router.post('/search-applications', (req, res) => {
     })
 })
 
+router.post('/test', (req, res) => {
 
+    let img = req.files.file;
+
+    console.log(img);
+
+    s3.upload({
+        Bucket: bucketName,
+        Key: 'profile/' + img.name,
+        Body: img.data
+    }, (err, data) => {
+        if (err) {
+            console.error(err);
+            res.json({ err: err })
+        } else {
+            res.json({ img_uri: data.Location })
+        }
+    });
+
+})
 
 module.exports = router;

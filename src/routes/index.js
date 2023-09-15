@@ -21,6 +21,7 @@ router.post('/localtime', (req, res) => {
 
 
 router.use(require('../routes/auth/user'))
+// router.use(require('../middleware/useAuth'))
 router.use('/admission', require('../routes/admission/application'))
 router.use('/screening', require('../routes/admission/screening'))
 

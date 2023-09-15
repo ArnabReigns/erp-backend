@@ -5,7 +5,7 @@ function useAuth(req, res, next) {
     const signedkey = req.headers['x-access-token'];
 
     if (!signedkey) {
-        return res.status(403).json({ error: 'access token not found' });
+        return res.status(403).json({ error: 'user not found' });
     }
 
     const user = jwt.decode(signedkey, SECRET)

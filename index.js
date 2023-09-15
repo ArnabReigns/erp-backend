@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const db = require('./config/db');
+const logger = require('./src/utils/logger');
 const app = express();
 
 app.use(express.json());
@@ -22,5 +23,5 @@ app.get('/', (req, res) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log({server_status: 'active'});
 });

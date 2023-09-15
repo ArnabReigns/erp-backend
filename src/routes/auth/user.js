@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../../models/auth/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const useAuth = require('../../middleware/jwt');
+const useAuth = require('../../middleware/useAuth');
 
 
 // Authentication
@@ -87,7 +87,7 @@ router.get('/users', (req, res) => {
     User.find({}, '-password -__v').then((user) => res.json(user));
 })
 
-router.get('/getSignedUser', useAuth, (req, res) => {
+router.get('/getSignedUser', (req, res) => {
     res.json({ user: req.user });
 })
 

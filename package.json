@@ -2,6 +2,11 @@
   "name": "erp-back",
   "version": "1.0.0",
   "description": "",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
@@ -11,14 +16,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.413.0",
+    "@aws-sdk/lib-storage": "^3.414.0",
+    "aws-sdk": "^2.1458.0",
     "bcrypt": "latest",
     "dotenv": "latest",
     "email-validator": "latest",
     "express": "latest",
+    "express-fileupload": "^1.4.0",
     "express-session": "latest",
     "jsonwebtoken": "latest",
     "mongoose": "latest",
-    "winston": "^3.10.0"
+    "winston": "^3.10.0",
+    "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
     "nodemon": "latest"

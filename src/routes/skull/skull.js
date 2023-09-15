@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Skull = require('../../models/skull/skull');
 
+
 router.get('/', (req, res) => {
     Skull.findOne({
         key: req.query.key

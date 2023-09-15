@@ -1,6 +1,9 @@
+const { SpatialTrackingSharp } = require('@mui/icons-material');
 const mongoose = require('mongoose');
 
 const ApplicationSchema = new mongoose.Schema({
+
+  profile_img: String,
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
   age: Number,
@@ -21,17 +24,35 @@ const ApplicationSchema = new mongoose.Schema({
   school_name: String,
   board: String,
   medium: String,
+
   residential_state: String,
   residential_city: String,
   residential_pin_code: String,
+
   permanent_state: String,
   permanent_city: String,
   permanent_pin_code: String,
+
   father_name: String,
   father_occupation: String,
   father_annual_income: Number,
-  parent_number: String,
-  parent_email: String,
+  father_number: Number,
+  father_email: String,
+
+  mother_name: String,
+  mother_occupation: String,
+  mother_annual_income: Number,
+  mother_number: Number,
+  mother_email: String,
+
+  guardian_name: String,
+  guardian_occupation: String,
+  guardian_annual_income: Number,
+  guardian_number: Number,
+  guardian_email: String,
+
+  primary_contact: Number,
+
   payment_date: Date,
   payment_mode: String,
   challan_no: String,
