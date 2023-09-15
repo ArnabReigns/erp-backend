@@ -61,21 +61,18 @@ const ApplicationSchema = new mongoose.Schema({
 
 ApplicationSchema.pre('save', function (next) {
   if (!this.date_of_birth) {
-    // If the date of birth is not set, do nothing
     next();
     return;
   }
 
-  // Calculate age based on the date of birth
   const now = new Date();
   const birthDate = new Date(this.date_of_birth);
   const ageInMilliseconds = now - birthDate;
 
   const ageInYears = Math.floor(ageInMilliseconds / (365 * 24 * 60 * 60 * 1000));
-  // Set the calculated age in the 'age' field
   this.age = ageInYears;
 
-  next(); // Continue with the save operation
+  next();
 });
 
 const Application = mongoose.model('Application', ApplicationSchema);

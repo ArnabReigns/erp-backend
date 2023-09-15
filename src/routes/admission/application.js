@@ -4,7 +4,7 @@ const Student = require('../../models/admission/application');
 const emailValidator = require("email-validator");
 const { HttpStatusCodes, HttpStatusText } = require('../../utils/http-status');
 const fileUpload = require('express-fileupload');
-const AWS = require('aws-sdk'); 
+const AWS = require('aws-sdk');
 
 const s3 = new AWS.S3({
     accessKeyId: 'AKIA2FCMN5RRFNDIBMMF',
@@ -36,6 +36,7 @@ router.post('/create-application', async (req, res) => {
         const {
             first_name,
             last_name,
+            age,
             middle_name,
             date_of_birth,
             gender,
@@ -62,55 +63,96 @@ router.post('/create-application', async (req, res) => {
             father_name,
             father_occupation,
             father_annual_income,
-            parent_number,
-            parent_email,
+            father_number,
+            father_email,
+            mother_name,
+            mother_occupation,
+            mother_annual_income,
+            mother_number,
+            mother_email,
+            guardian_name,
+            guardian_occupation,
+            guardian_annual_income,
+            guardian_number,
+            guardian_email,
+            primary_contact,
             payment_date,
             payment_mode,
-            challan_no,
+            challan_no
         } = req.body;
 
-        const student = new Student({
-            first_name,
-            last_name,
-            middle_name,
-            date_of_birth,
-            gender,
-            cma,
-            nationality,
-            religion,
-            category,
-            contact_number,
-            email,
-            applying_for,
-            fisc_year,
-            current_class,
-            previous_percent,
-            specialization,
-            school_name,
-            board,
-            medium,
-            residential_state,
-            residential_city,
-            residential_pin_code,
-            permanent_state,
-            permanent_city,
-            permanent_pin_code,
-            father_name,
-            father_occupation,
-            father_annual_income,
-            parent_number,
-            parent_email,
-            payment_date,
-            payment_mode,
-            challan_no,
+        let img = req.files.profile_img;
+        let profile_img = ""
+
+        s3.upload({
+            Bucket: bucketName,
+            Key: 'profile/' + img.name,
+            Body: img.data
+        }, async (err, data) => {
+            if (err) {
+                res.json({ err })
+                console.error(err);
+            } else {
+                profile_img = data.Location;
+
+                const student = new Student({
+                    profile_img,
+                    first_name,
+                    last_name,
+                    age,
+                    middle_name,
+                    date_of_birth,
+                    gender,
+                    cma,
+                    nationality,
+                    religion,
+                    category,
+                    contact_number,
+                    email,
+                    applying_for,
+                    fisc_year,
+                    current_class,
+                    previous_percent,
+                    specialization,
+                    school_name,
+                    board,
+                    medium,
+                    residential_state,
+                    residential_city,
+                    residential_pin_code,
+                    permanent_state,
+                    permanent_city,
+                    permanent_pin_code,
+                    father_name,
+                    father_occupation,
+                    father_annual_income,
+                    father_number,
+                    father_email,
+                    mother_name,
+                    mother_occupation,
+                    mother_annual_income,
+                    mother_number,
+                    mother_email,
+                    guardian_name,
+                    guardian_occupation,
+                    guardian_annual_income,
+                    guardian_number,
+                    guardian_email,
+                    primary_contact,
+                    payment_date,
+                    payment_mode,
+                    challan_no
+                });
+
+                if (email && !emailValidator.validate(email)) return res.json({ error: "Student email is not valid" })
+                // if (parent_email && !emailValidator.validate(parent_email)) return res.json({ error: "Parent Email is not valid" })
+
+                const savedStudent = await student.save();
+
+                res.status(201).json({ message: 'Student application created successfully', data: savedStudent });
+
+            }
         });
-
-        if (email && !emailValidator.validate(email)) return res.json({ error: "Student email is not valid" })
-        if (parent_email && !emailValidator.validate(parent_email)) return res.json({ error: "Parent Email is not valid" })
-
-        const savedStudent = await student.save();
-
-        res.status(201).json({ message: 'Student application created successfully', data: savedStudent });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while creating the student application' });
@@ -177,25 +219,6 @@ router.post('/search-applications', (req, res) => {
     })
 })
 
-router.post('/test', (req, res) => {
 
-    let img = req.files.file;
-
-    console.log(img);
-
-    s3.upload({
-        Bucket: bucketName,
-        Key: 'profile/' + img.name,
-        Body: img.data
-    }, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.json({ err: err })
-        } else {
-            res.json({ img_uri: data.Location })
-        }
-    });
-
-})
 
 module.exports = router;
