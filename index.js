@@ -7,7 +7,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use('/', require('./src/middleware/skull'))
+// skull
+app.use('/skull', require('./src/routes/skull/skull'))
+app.use(require('./src/middleware/skull'))
+
+
 app.use('/api', require('./src/middleware/apikey'))
 app.use('/api', require('./src/routes'));
 

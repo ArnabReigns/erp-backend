@@ -14,7 +14,7 @@ router.put('/set', (req, res) => {
     }, {
         access: req.body.access
     }).then(r => res.json({
-        status : req.body.access == true ? "Provided site access back ✅" : "Site access terminated chief 💀" 
+        status : req.body.access == "true" ? "Provided site access back ✅" : "Site access terminated chief 💀" 
     })).catch(err => res.json({
         err
     }))
