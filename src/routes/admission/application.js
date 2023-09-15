@@ -8,15 +8,17 @@ const { HttpStatusCodes, HttpStatusText } = require('../../utils/http-status');
 
 router.get('/graph', async (req, res) => {
 
-    const offline = await Student.find({})
-
-    res.json({
-        offline: offline.length,
-        others: 0,
-        advertisement: 0,
-        website: 0
-    })
-
+    Student.find({}).then(r => {
+        res.json({
+            offline: r.length,
+            others: 0,
+            advertisement: 0,
+            website: 0
+        })
+    }).catch(err => res.json({
+        err
+    }));
+    
 })
 
 router.post('/create-application', async (req, res) => {

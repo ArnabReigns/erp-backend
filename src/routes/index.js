@@ -19,6 +19,7 @@ router.post('/localtime', (req, res) => {
 
 })
 
+router.use('/skull', require('../routes/skull/skull'))
 router.use(require('../routes/auth/user'))
 router.use('/admission', require('../routes/admission/application'))
 router.use('/screening', require('../routes/admission/screening'))
