@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 
 router.post('/localtime', (req, res) => {
 
-    if (req.body.date) date = new Date();
+    if (req.body.date) date = new Date(req.body.date);
     // Define the Kolkata, India timezone
     const timeZone = 'Asia/Kolkata';
     // Convert the date to the local date and time of Kolkata, India
@@ -20,7 +20,8 @@ router.post('/localtime', (req, res) => {
 })
 
 router.use(require('../routes/auth/user'))
-router.use('/admission', require('../routes/admission/application'), require('../routes/admission/application-graph'))
+router.use('/admission', require('../routes/admission/application'))
+router.use('/screening', require('../routes/admission/screening'))
 
 
 module.exports = router;

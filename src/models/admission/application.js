@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
-const studentSchema = new mongoose.Schema({
+const ApplicationSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
+  age: Number,
   middle_name: String,
   date_of_birth: { type: Date, required: true },
   gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
@@ -38,6 +39,25 @@ const studentSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Student = mongoose.model('Student', studentSchema);
+ApplicationSchema.pre('save', function (next) {
+  if (!this.date_of_birth) {
+    // If the date of birth is not set, do nothing
+    next();
+    return;
+  }
 
-module.exports = Student;
+  // Calculate age based on the date of birth
+  const now = new Date();
+  const birthDate = new Date(this.date_of_birth);
+  const ageInMilliseconds = now - birthDate;
+
+  const ageInYears = Math.floor(ageInMilliseconds / (365 * 24 * 60 * 60 * 1000));
+  // Set the calculated age in the 'age' field
+  this.age = ageInYears;
+
+  next(); // Continue with the save operation
+});
+
+const Application = mongoose.model('Application', ApplicationSchema);
+
+module.exports = Application;

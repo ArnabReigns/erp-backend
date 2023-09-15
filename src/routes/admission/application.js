@@ -5,6 +5,20 @@ const emailValidator = require("email-validator");
 const { HttpStatusCodes, HttpStatusText } = require('../../utils/http-status');
 
 // Create a new student application
+
+router.get('/graph', async (req, res) => {
+
+    const offline = await Student.find({})
+
+    res.json({
+        offline: offline.length,
+        others: 0,
+        advertisement: 0,
+        website: 0
+    })
+
+})
+
 router.post('/create-application', async (req, res) => {
     try {
         const {
@@ -146,7 +160,7 @@ router.post('/search-applications', (req, res) => {
 
     const { key, value } = req.body;
 
-    Student.find({ [key]: value }).then(result => res.json(result)).catch(() => {
+    Student.find({ [key]: { $regex: value } }).then(result => res.json(result)).catch(() => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
