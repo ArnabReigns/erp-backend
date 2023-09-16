@@ -78,7 +78,8 @@ router.post('/create-application', async (req, res) => {
             primary_contact,
             payment_date,
             payment_mode,
-            challan_no
+            challan_no,
+            type
         } = req.body;
 
         let img = req.files.profile_img;
@@ -141,7 +142,8 @@ router.post('/create-application', async (req, res) => {
                     primary_contact,
                     payment_date,
                     payment_mode,
-                    challan_no
+                    challan_no,
+                    type
                 });
 
                 if (email && !emailValidator.validate(email)) return res.json({ error: "Student email is not valid" })
@@ -159,44 +161,60 @@ router.post('/create-application', async (req, res) => {
     }
 });
 
-router.post('/applications/filter', (req, res) => {
+router.post('/applications/filter', async (req, res) => {
 
-    const { fisc_year, date, current_class } = req.body;
+    try {
+        const { fisc_year, date, current_class } = req.body;
 
-    const filter = {};
+        const filter = {};
 
-    var start, end;
+        var start, end;
 
-    if (date) {
-        const [startDate, endDate] = date.split('-');
+        if (date) {
+            const [startDate, endDate] = date.split('-');
 
-        start = new Date(new Date(startDate).setHours(0, 0, 0))
-        end = new Date(new Date(endDate).setHours(23, 59, 59))
+            start = new Date(new Date(startDate).setHours(0, 0, 0))
+            end = new Date(new Date(endDate).setHours(23, 59, 59))
 
-        filter.createdAt = {
-            $gte: start,
-            $lte: end
-        };
+            filter.createdAt = {
+                $gte: start,
+                $lte: end
+            };
+        }
+
+        if (fisc_year) {
+            filter.fisc_year = fisc_year;
+        }
+        if (current_class) {
+            filter.current_class = current_class;
+        }
+
+        const all = await Student.find(filter);
+        const offline = await Student.find({ ...filter, type: 'offline' })
+        const online = await Student.find({ ...filter, type: 'online' })
+        const ad = await Student.find({ ...filter, type: 'ad' })
+        const others = await Student.find({ ...filter, type: 'others' })
+
+
+        res.json({
+            graph: {
+                total : all.length,
+                offline: offline.length,
+                online: online.length,
+                ad: ad.length,
+                others: others.length 
+            },
+            all,
+            offline,
+            online,
+            ad,
+            others
+        })
     }
-
-    if (fisc_year) {
-        filter.fisc_year = fisc_year;
+    catch (err) 
+    {
+        res.status(500).json(err)
     }
-    if (current_class) {
-        filter.current_class = current_class;
-    }
-
-    Student.find(filter).then(result => {
-        res.status(200).json(
-            {
-                result: result,
-                date_filter: `filtering aplications created between ${start.toLocaleString()} & ${end.toLocaleString()} according to indian local time`
-            })
-    }
-    ).catch((err) => {
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: err });
-    })
-
 
 })
 
