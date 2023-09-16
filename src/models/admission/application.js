@@ -55,7 +55,9 @@ const ApplicationSchema = new mongoose.Schema({
   payment_date: Date,
   payment_mode: String,
   challan_no: String,
-  created_at: Date
+}, {
+  timestamps: true,
+
 });
 
 ApplicationSchema.pre('save', function (next) {
@@ -74,13 +76,6 @@ ApplicationSchema.pre('save', function (next) {
   next();
 });
 
-ApplicationSchema.pre('save', function(next) {
-  if (!this.created_at) {
-    console.log(new Date())
-    this.created_at = new Date();
-  }
-  next();
-});
 
 const Application = mongoose.model('Application', ApplicationSchema);
 

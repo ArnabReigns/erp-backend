@@ -173,7 +173,7 @@ router.post('/applications/filter', (req, res) => {
         start = new Date(new Date(startDate).setHours(0, 0, 0))
         end = new Date(new Date(endDate).setHours(23, 59, 59))
 
-        filter.created_at = {
+        filter.createdAt = {
             $gte: start,
             $lte: end
         };
