@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     console.log(req.headers['x-forwarded-for'] || req.socket.remoteAddress );
-    Logger(req, 'log created');
+    Logger(req, 'hehe');
     res.send('ok')
 })
 
