@@ -26,7 +26,6 @@ router.get('/graph', async (req, res) => {
 
 router.post('/create-rules', async (req, res) => {
 
-    // ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11-Science', '11-Arts', '11-Commerce', '12-Science', '12-Arts', '12-Commerce']
 
     const classes = req.body.classes;
 
@@ -36,7 +35,7 @@ router.post('/create-rules', async (req, res) => {
         await new ScreeningRule({
             class: cl,
             active: false,
-            criteria: []
+            criteria: {}
         }).save();
     })
 
@@ -56,7 +55,7 @@ router.put('/screening-rules', async (req, res) => {
             switch (cr.operator) {
 
                 case 'eq':
-                    filter[cr.field] = cr.value
+                    filter[cr.field] = cr.value.split('__')
                     break;
 
                 case 'lt':
@@ -94,15 +93,16 @@ router.put('/screening-rules', async (req, res) => {
             class: req.body.class
         }, {
             active: req.body.active,
+            formated_criteria: query.criteria,
             criteria: filter
         })
 
         res.json({
+            formated_criteria: query.criteria,
             query: {
                 current_class: query.class,
                 ...filter
-            },
-            screened: screened
+            }
         })
     }
     catch (err) {
@@ -114,16 +114,17 @@ router.put('/screening-rules', async (req, res) => {
 
 })
 
-router.get("/get-rules", (req, res) => {
-    ScreeningRule.find({}).then(r => {
-        res.json(r);
-    }).catch(
-        err => { res.status(401).send(err) }
-    )
+router.get("/get-rules", async (req, res) => {
+    try {
+        const rules = await ScreeningRule.find({}, '-criteria -__v -_id');
+        res.json(rules)
+    }
+    catch (err) { res.status(401).send(err) }
+
 })
 
 router.get("/get-rules/enabled", (req, res) => {
-    ScreeningRule.find({ criteria: { $exists: true, $not: { $size: 0 } } }).then(r => {
+    ScreeningRule.find({ criteria: { $exists: true, $not: { $size: 0 } } }, '-criteria -__v -_id').then(r => {
         res.json(r);
     }).catch(
         err => { res.status(401).send(err) }
@@ -131,7 +132,7 @@ router.get("/get-rules/enabled", (req, res) => {
 })
 
 router.get("/get-rules/disabled", (req, res) => {
-    ScreeningRule.find({ criteria: { $exists: true, $size: 0 } }).then(r => {
+    ScreeningRule.find({ criteria: { $exists: true, $size: 0 } }, '-criteria -__v -_id').then(r => {
         res.json(r);
     }).catch(
         err => { res.status(401).send(err) }
@@ -141,7 +142,6 @@ router.get("/get-rules/disabled", (req, res) => {
 router.get("/screened-applications", async (req, res) => {
 
     const enabled_rules = await ScreeningRule.find({ criteria: { $exists: true, $not: { $size: 0 } } });
-
     screened_application = [];
 
     await Promise.all(enabled_rules.map(async (rule) => {
