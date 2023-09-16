@@ -5,6 +5,7 @@ const emailValidator = require("email-validator");
 const { HttpStatusCodes, HttpStatusText } = require('../../utils/http-status');
 const fileUpload = require('express-fileupload');
 const AWS = require('aws-sdk');
+const Logger = require('../../utils/logger');
 
 const s3 = new AWS.S3({
     accessKeyId: 'AKIA2FCMN5RRFNDIBMMF',
@@ -136,6 +137,7 @@ router.post('/create-application', async (req, res) => {
 
                 const savedStudent = await student.save();
 
+                Logger(req,`${req.user.username} created an application ( ${savedStudent._id} )`);
                 res.status(201).json({ message: 'Student application created successfully', data: savedStudent });
 
             }
@@ -217,7 +219,7 @@ router.delete('/applications', (req, res) => {
 })
 
 router.get('/applications/:id', (req, res) => {
-    Student.find({ _id: req.params.id }).then(result => res.json(result)).catch(() => {
+    Student.findOne({ _id: req.params.id }).then(result => res.json(result)).catch(() => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
 })
