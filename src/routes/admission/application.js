@@ -163,8 +163,6 @@ router.post('/applications/filter', (req, res) => {
 
     const { fisc_year, date, current_class } = req.body;
 
-    console.log("requested")
-
     const filter = {};
 
     var start, end;
@@ -187,17 +185,16 @@ router.post('/applications/filter', (req, res) => {
     if (current_class) {
         filter.current_class = current_class;
     }
-    
+
     Student.find(filter).then(result => {
-        console.log(result)
         res.status(200).json(
             {
-                result: result
+                result: result,
+                date_filter: `filtering aplications created between ${start.toLocaleString()} & ${end.toLocaleString()} according to indian local time`
             })
     }
     ).catch((err) => {
-        console.log(err)
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: "What the fuck" });
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: err });
     })
 
 
