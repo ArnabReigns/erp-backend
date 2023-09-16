@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 
-process.env.TZ = 'Asia/Kolkata';
+// process.env.TZ = 'Asia/Kolkata';
 
 const db = require('./config/db');
 const logger = require('./src/utils/logger');
