@@ -187,7 +187,6 @@ router.post('/applications/filter', (req, res) => {
     }
 
     Student.find(filter).then(result => {
-        result[0].localdate = new Date(result[0].created_at).toLocaleString();
         res.status(200).json(
             {
                 result: result,
