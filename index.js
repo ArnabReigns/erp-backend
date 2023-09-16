@@ -4,7 +4,6 @@ require('dotenv').config();
 process.env.TZ = 'Asia/Kolkata';
 
 const db = require('./config/db');
-const logger = require('./src/utils/logger');
 const app = express();
 
 app.use(express.json());

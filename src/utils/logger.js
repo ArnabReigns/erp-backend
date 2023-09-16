@@ -1,27 +1,14 @@
-const { createLogger, transports, format } = require('winston')
-require('winston-mongodb')
+const logger = require('../models/logger/logger')
 
-const logger = createLogger({
-    transports: [
-        new transports.Console({
-            level: 'info',
-            format: format.combine(format.timestamp({
-                format: 'DD.MM.YY-hh:mm a'
-            }), format.json())
-        }),
+const Logger = (req,log) => {
+    new logger({
+        activity: log,
+        user: req.user,
+        ip: req.socket.remoteAddress,
+        date: new Date()
+    }).save().then(res => {
+        console.log("Logged : " + log)
+    }).catch(err => console.log(err));
+}
 
-        new transports.MongoDB({
-            level: 'info',
-            db: process.env.MONGOURI,
-            options: {
-                useUnifiedTopology: true
-            },
-            collection: 'activity-log',
-            format: format.combine(format.timestamp({
-                format: 'DD.MM.YY-hh:mm a'
-            }), format.json())
-        })
-    ]
-})
-
-module.exports = logger
+module.exports = Logger;

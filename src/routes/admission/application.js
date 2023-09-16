@@ -12,24 +12,9 @@ const s3 = new AWS.S3({
 });
 
 const bucketName = 'sociolinq';
-
 router.use(fileUpload());
 
 // Create a new student application
-
-router.get('/graph', async (req, res) => {
-
-    Student.find({}).then(r => {
-        res.json({
-            offline: r.length,
-            others: 0,
-            advertisement: 0,
-            website: 0
-        })
-    }).catch(err => res.json({
-        err
-    }));
-})
 
 router.post('/create-application', async (req, res) => {
     try {
@@ -198,11 +183,11 @@ router.post('/applications/filter', async (req, res) => {
 
         res.json({
             graph: {
-                total : all.length,
+                total: all.length,
                 offline: offline.length,
                 online: online.length,
                 ad: ad.length,
-                others: others.length 
+                others: others.length
             },
             all,
             offline,
@@ -211,14 +196,15 @@ router.post('/applications/filter', async (req, res) => {
             others
         })
     }
-    catch (err) 
-    {
+    catch (err) {
         res.status(500).json(err)
     }
 
 })
 
 router.get('/applications', (req, res) => {
+
+    console.log(req.user)
     Student.find({}).then(result => res.json(result)).catch(() => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: HttpStatusText.INTERNAL_SERVER_ERROR });
     })
