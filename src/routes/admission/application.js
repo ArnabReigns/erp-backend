@@ -165,25 +165,20 @@ router.post('/applications/filter', (req, res) => {
 
     const filter = {};
 
+    var start, end;
+
     if (date) {
         const [startDate, endDate] = date.split('-');
 
-        const start = new Date(new Date(startDate).setHours(0, 0, 0))
-        const end = new Date(new Date(endDate).setHours(23, 59, 59))
-
-        Student.find({}).then(r =>
-            r.map((s) => {
-                console.log(s.first_name + " " + new Date(s.created_at).toLocaleString())
-            }))
-
-        console.log(start.toLocaleString(), end.toLocaleString())
+        start = new Date(new Date(startDate).setHours(0, 0, 0))
+        end = new Date(new Date(endDate).setHours(23, 59, 59))
 
         filter.created_at = {
             $gte: start,
             $lte: end
         };
     }
-    
+
     if (fisc_year) {
         filter.fisc_year = fisc_year;
     }
@@ -191,7 +186,15 @@ router.post('/applications/filter', (req, res) => {
         filter.current_class = current_class;
     }
 
-    Student.find(filter).then(result => res.status(200).json(result)).catch((err) => {
+    Student.find(filter).then(result => {
+        result[0].localdate = new Date(result[0].created_at).toLocaleString();
+        res.status(200).json(
+            {
+                result: result,
+                date_filter: `filtering aplications created between ${start.toLocaleString()} & ${end.toLocaleString()} according to indian local time`
+            })
+    }
+    ).catch((err) => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: err });
     })
 
