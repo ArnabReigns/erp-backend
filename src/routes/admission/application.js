@@ -168,21 +168,22 @@ router.post('/applications/filter', (req, res) => {
     if (date) {
         const [startDate, endDate] = date.split('-');
 
-        const start = new Date(new Date(startDate).setHours(0, 0, 0)).toLocaleString()
-        const end = new Date(new Date(endDate).setHours(23, 59, 59)).toLocaleString()
+        const start = new Date(new Date(startDate).setHours(0, 0, 0))
+        const end = new Date(new Date(endDate).setHours(23, 59, 59))
 
-        Student.find({}).then(r => 
-            r.map((s)=>{
-                console.log( s.first_name + " " + new Date(s.created_at).toLocaleString())
+        Student.find({}).then(r =>
+            r.map((s) => {
+                console.log(s.first_name + " " + new Date(s.created_at).toLocaleString())
             }))
 
-        console.log(start, end)
+        console.log(start.toLocaleString(), end.toLocaleString())
 
         filter.created_at = {
             $gte: start,
             $lte: end
         };
     }
+    
     if (fisc_year) {
         filter.fisc_year = fisc_year;
     }
