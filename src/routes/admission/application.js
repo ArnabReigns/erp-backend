@@ -167,9 +167,20 @@ router.post('/applications/filter', (req, res) => {
 
     if (date) {
         const [startDate, endDate] = date.split('-');
+
+        const start = new Date(new Date(startDate).setHours(0, 0, 0)).toLocaleString()
+        const end = new Date(new Date(endDate).setHours(23, 59, 59)).toLocaleString()
+
+        Student.find({}).then(r => 
+            r.map((s)=>{
+                console.log( s.first_name + " " + new Date(s.created_at).toLocaleString())
+            }))
+
+        console.log(start, end)
+
         filter.created_at = {
-            $gte: new Date(new Date(startDate).setHours(0, 0, 0)),
-            $lte: new Date(new Date(endDate).setHours(23, 59, 59))
+            $gte: start,
+            $lte: end
         };
     }
     if (fisc_year) {
